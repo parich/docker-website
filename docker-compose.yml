@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    image: nginx:latest
+    container_name: reverse-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./a.com:/var/www/a.com
+      - ./b.com:/var/www/b.com
+    depends_on:
+      - a
+      - b
+    restart: always
+
+  a:
+    image: nginx:alpine
+    container_name: a-com
+    volumes:
+      - ./a.com:/usr/share/nginx/html:ro
+    expose:
+      - "80"
+
+  b:
+    image: nginx:alpine
+    container_name: b-com
+    volumes:
+      - ./b.com:/usr/share/nginx/html:ro
+    expose:
+      - "80"
